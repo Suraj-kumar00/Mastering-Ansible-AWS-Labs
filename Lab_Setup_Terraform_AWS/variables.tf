@@ -1,15 +1,19 @@
 variable "aws_region" {
-  default = "ap-south-1"
+  description = "AWS region"
+  type        = string
 }
 
 variable "instance_type" {
-  default = "t2.micro"
+  description = "Instance type"
+  type        = string
 }
 
 variable "ami_id" {
-  default = "ami-0987ed37fa1f1b248"  
+  description = "Amazon Machine Image (AMI) ID"
+  type        = string
 }
 
 variable "availability_zone" {
-  default = "ap-south-1a"
+  description = "AWS Availability Zone"
+  type        = string
 }
