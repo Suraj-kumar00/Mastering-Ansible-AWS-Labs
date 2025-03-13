@@ -1,0 +1,10 @@
+- name: First Basic Playbook
+  hosts: all
+
+  tasks:
+    - name: Test Connectivity
+      ping:
+    - name: "Print Output"
+      debug: msg="Alright!!!"
+    - debug:
+        var: ansible_facts

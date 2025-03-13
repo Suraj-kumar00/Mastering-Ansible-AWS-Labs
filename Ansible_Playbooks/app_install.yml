@@ -1,0 +1,21 @@
+---
+- name: Install and Start the Service
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update apt package
+      apt:
+        update_cache: yes
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+    - name: Installing nginx
+      apt:
+        name: nginx
+        state: present
+    - name: Starting the nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: true

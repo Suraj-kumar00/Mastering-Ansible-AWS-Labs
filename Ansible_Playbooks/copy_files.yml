@@ -1,0 +1,13 @@
+---
+- name: Copying files to remote
+  hosts: all
+
+  tasks:
+    - name: Copy files
+      copy:
+        src: /home/devopsbro/Desktop/ansible1.txt
+        dest: /tmp/
+        owner: ubuntu
+        group: ubuntu
+        mode: 0666
+        backup: true
