@@ -1,4 +1,4 @@
-## Terraform Setup Guide for AWS Free Tier (t2.micro Instances)
+## Terraform Setup Guide to provision the infrastructure on AWS
 
 ### Step 1: Install Terraform
 
@@ -16,14 +16,32 @@ aws configure
 2. Secret Key, Region
 3. Output format (json)
 
-# Initialize Terraform
+### Check the version of aws
 
+```bash
+aws --version
+```
+
+### Initialize Terraform
+
+```bash
 terraform init
+```
 
-# Preview changes
+### Preview changes
 
+```bash
 terraform plan
+```
 
-# Apply configuration without asking for the confimation
+### Apply configuration without asking for the confirmation
 
-terraform apply -auto-approve
+```bash
+terraform apply --auto-approve
+```
+
+### Destory the infrastructure without asking for the confirmation
+
+```bash
+terraform destroy --auto-approve
+```
