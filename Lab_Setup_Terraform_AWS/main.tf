@@ -131,3 +131,16 @@ resource "aws_volume_attachment" "ebs_att" {
   instance_id = aws_instance.web[count.index].id
   volume_id   = aws_ebs_volume.storage[count.index].id
 }
+
+# Allocate Elastic IPs
+resource "aws_eip" "elastic_ip" {
+  count  = 2
+  domain = "vpc"
+}
+
+# Associate Elastic IPs with Instances
+resource "aws_eip_association" "eip_assoc" {
+  count         = 2
+  instance_id   = aws_instance.web[count.index].id
+  allocation_id = aws_eip.elastic_ip[count.index].id
+}
