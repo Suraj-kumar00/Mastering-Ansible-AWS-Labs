@@ -1,31 +1,18 @@
-# To Generate Private Key
-resource "tls_private_key" "rsa_4096" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-# Define SSH Key Pair Name
+# Define SSH Key Pair Name (Persist Key)
 variable "key_name" {
   description = "Name of the SSH key pair"
   default     = "terraform-key"
 }
 
-# Create AWS Key Pair for EC2 SSH Access
+# Load an existing SSH key from ~/.ssh instead of requiring it in the module
 resource "aws_key_pair" "key_pair" {
   key_name   = var.key_name
-  public_key = tls_private_key.rsa_4096.public_key_openssh
+  public_key = file("${var.home_directory}/.ssh/${var.key_name}.pub") # Dynamically reference public key
 }
 
 variable "home_directory" {
   description = "User's home directory path"
   default     = "/home/devopsbro"
-}
-
-# Save Private Key Locally
-resource "local_file" "private_key" {
-  content  = tls_private_key.rsa_4096.private_key_pem
-  filename = "${var.home_directory}/.ssh/${var.key_name}.pem"
-  file_permission = "0400"
 }
 
 # Create a Default VPC (if it doesn't exist)
@@ -103,9 +90,9 @@ resource "aws_security_group" "sg_ec2" {
   }
 }
 
-# Create EC2 Instances using the generated key
+# Create EC2 Instance
 resource "aws_instance" "web" {
-  count         = 2  
+  count         = 1  
   ami           = var.ami_id
   instance_type = var.instance_type
   subnet_id     = aws_subnet.public_subnet.id  
@@ -117,16 +104,21 @@ resource "aws_instance" "web" {
   }
 }
 
+# Assign Elastic IP to Keep the Same Public IP
+resource "aws_eip" "elastic_ip" {
+  instance = aws_instance.web[0].id
+}
+
 # Create EBS Volumes for each instance
 resource "aws_ebs_volume" "storage" {
-  count             = 2  
+  count             = 1  
   availability_zone = var.availability_zone
   size              = 10
 }
 
 # Attach EBS Volumes to EC2 Instances
 resource "aws_volume_attachment" "ebs_att" {
-  count       = 2  
+  count       = 1  
   device_name = "/dev/xvdf"
   instance_id = aws_instance.web[count.index].id
   volume_id   = aws_ebs_volume.storage[count.index].id
